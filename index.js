@@ -1,4 +1,4 @@
-const { DynamoDBClient, CreateTableCommand } = require("@aws-sdk/client-dynamodb");
+const { DynamoDBClient, CreateTableCommand,PutItemCommand, GetItemCommand } = require("@aws-sdk/client-dynamodb");
 
 const client = new DynamoDBClient({ region: "us-east-1", profile: "mtwdeveloper" });
 
@@ -17,4 +17,33 @@ async function createTable() {
     console.log(response);
 }
 
-//createTable();
+async function addMovie() {
+    const params = {
+      TableName: "Movies",
+      Item: {
+        title: { S: "title" },
+        rtScore: { S: "Number" },
+      },
+    };
+    
+    const command = new PutItemCommand(params);
+    const response = await client.send(command);
+    console.log(response);
+}
+
+// Get item in table
+async function getItem() {
+    const params = {
+        TableName: "Movies",
+        Key: {
+            title: { S: "title" },
+        },
+    };
+    const command = new GetItemCommand(params);
+    const response = await client.send(command);
+    console.log(response.Item);
+}
+
+
+//addMovie();
+//getItem();
